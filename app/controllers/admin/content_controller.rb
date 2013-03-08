@@ -114,8 +114,17 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
+    render :status => :unauthorized and return unless current_user.admin?
+
     article = Article.find(params[:id])
+
     other_article = params[:merge_with]
+    begin
+      Article.find(other_article)
+    rescue
+      raise ActiveRecord::RecordNotFound and return
+    end
+
     new_article = article.merge_with(other_article)
 
     redirect_to "/admin/content/edit/#{new_article.id}"
