@@ -43,6 +43,33 @@ Given /^the blog is set up$/ do
                 :state => 'active'})
 end
 
+Given /^I am logged in as a non-admin$/ do
+  User.create!({:login => 'publisher',
+                :password => 'aaaaaaaa',
+                :email => 'joe@example.com',
+                :profile_id => 2,
+                :name => 'publisher',
+                :state => 'active'})
+
+end
+
+Given /^I want to merge two articles with user \"(.+)\"$/ do |user|
+  user = User.find_by_email(user)
+  article_1 = Article.create(:allow_comments => true, :allow_pings => true, :author => "Mr Typo", :body => "Welcome to Typo. This is your first article. Edit or delete it, then start blogging!", :guid => "1bf3e2ca-ed7b-4562-8a4a-8ce8438822c8", :id => 1, :permalink => "hello-world", :post_type => "read", :published => true, :published_at => "2012-06-09 21:51:55 UTC", :settings => {"password"=>nil}, :state => "published", :text_filter_id => 5, :title => "Hello World!", :type => "Article", :user_id => user.id)
+  article_2 = Article.create(:allow_comments => true, :allow_pings => true, :author => "Mr Typo", :body => "Hello world!", :guid => "1bf3e2ca-ed7b-4562-8a4a-8ce8438822c1", :id => 2, :permalink => "hello-world-2", :post_type => "read", :published => true, :published_at => "2012-06-09 21:51:55 UTC", :settings => {"password"=>nil}, :state => "published", :text_filter_id => 5, :title => "Hello World!", :type => "Article", :user_id => user.id)
+  visit "/admin/content/edit/#{article_1.id}"
+  fill_in "merge_article", :with => article_2.id
+end
+
+Then /^I should not be authorized$/ do
+  click_button "Merge"
+  page.status_code.should include(status.to_i)
+end
+
+Then /^a new article with the merged content should be created$/ do
+  page.status_code.should include(302)
+end
+
 And /^I am logged into the admin panel$/ do
   visit '/accounts/login'
   fill_in 'user_login', :with => 'admin'
