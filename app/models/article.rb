@@ -417,8 +417,7 @@ class Article < Content
     self.body = self.body + article.body
 
     article.comments.each do |comment|
-      comment.article = self
-      comment.save!
+      self.comments << comment
     end
 
     article.destroy
