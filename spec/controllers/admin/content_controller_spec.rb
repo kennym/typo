@@ -546,6 +546,14 @@ describe Admin::ContentController do
       end
     end
 
+    describe 'merge action' do
+      it 'should redirect to newly created article' do
+        @article2 = Factory(:article)
+        post :merge, 'id' => @article.id, 'article' => {:id => @article2.id }
+        assigns(:article).redirects.count.should == 1
+      end
+    end
+
     describe 'resource_add action' do
 
       it 'should add resource' do

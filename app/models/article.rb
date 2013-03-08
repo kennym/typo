@@ -412,6 +412,21 @@ class Article < Content
     self.categorizations.build(:category => category, :is_primary => is_primary)
   end
 
+  def merge_with(article_id)
+    article = Article.find(article_id)
+    self.body = self.body + article.body
+
+    article.comments.each do |comment|
+      comment.article = self
+      comment.save!
+    end
+
+    article.destroy
+
+    self.save!
+    return self
+  end
+
   def access_by?(user)
     user.admin? || user_id == user.id
   end

@@ -629,6 +629,31 @@ describe Article do
       end
     end
 
+    describe "#merge_with" do
+      before(:each) do
+        @article = Factory.create(:article)
+        @article_to_merge = Factory.create(:second_article)
+      end
+
+      it "should move all comments from article to merge to first article" do
+        pending
+      end
+
+      it "should merge body from article to merge with first article" do
+        expected_body = @article.body + @article_to_merge.body
+        result = @article.merge_with(@article_to_merge)
+        result.body.should eq(expected_body)
+      end
+
+      it "should return an Article instance" do
+        @article.merge_with(@article_to_merge).should be_instance_of(Article)
+      end
+
+      it "should remove article which has been merged" do
+        @article.merge_with(@article_to_merge)
+        @article_to_merge.destroyed?.should eq(true)
+      end
+    end
   end
 end
 
