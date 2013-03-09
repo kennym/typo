@@ -127,7 +127,7 @@ class Admin::ContentController < Admin::BaseController
 
     new_article = article.merge_with(other_article)
 
-    redirect_to "/admin/content/edit/#{new_article.id}"
+    redirect_to "/admin/content"
   end
 
   protected
