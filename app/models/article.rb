@@ -423,7 +423,7 @@ class Article < Content
 
     self.save!
 
-    article.destroy
+    Article.find(article).delete
 
     return self
   end
