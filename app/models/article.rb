@@ -417,12 +417,14 @@ class Article < Content
     self.body = self.body + article.body
 
     article.comments.each do |comment|
+      comment.article_id = self.id
       self.comments << comment
     end
 
+    self.save!
+
     article.destroy
 
-    self.save!
     return self
   end
 
